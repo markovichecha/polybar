@@ -260,7 +260,6 @@ bar::bar(connection& conn, signal_emitter& emitter, const config& config, const 
 
   m_opts.size.w = geom_format_to_pixels(w, m_opts.monitor->w);
   m_opts.size.h = geom_format_to_pixels(h, m_opts.monitor->h);
-  ;
   m_opts.offset.x = geom_format_to_pixels(offsetx, m_opts.monitor->w);
   m_opts.offset.y = geom_format_to_pixels(offsety, m_opts.monitor->h);
 
