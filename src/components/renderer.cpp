@@ -1,4 +1,5 @@
 #include "components/renderer.hpp"
+
 #include "cairo/context.hpp"
 #include "components/config.hpp"
 #include "events/signal.hpp"
@@ -238,7 +239,7 @@ void renderer::begin(xcb_rectangle_t rect) {
         static_cast<double>(m_rect.width),
         static_cast<double>(m_rect.height), m_bar.radius};
     // clang-format on
-    *m_context << rgba{1.0, 1.0, 1.0, 1.0};
+    *m_context << rgba{0xffffffff};
     m_context->fill();
     m_context->pop(&m_cornermask);
     m_context->restore();
@@ -364,7 +365,7 @@ void renderer::flush(alignment a) {
     double fx = w - (xw - m_rect.width);
     double fsize = std::max(5.0, std::min(std::abs(fx), 30.0));
     m_log.trace("renderer: Drawing falloff (pos=%g, size=%g)", fx, fsize);
-    *m_context << cairo::linear_gradient{fx - fsize, 0.0, fx, 0.0, {0x00000000, 0xFF000000}};
+    *m_context << cairo::linear_gradient{fx - fsize, 0.0, fx, 0.0, {rgba{0x00000000}, rgba{0xFF000000}}};
     m_context->paint(0.25);
   }
 
@@ -691,7 +692,7 @@ bool renderer::on(const signals::ui::request_snapshot& evt) {
 }
 
 bool renderer::on(const signals::parser::change_background& evt) {
-  const unsigned int color{evt.cast()};
+  const rgba color{evt.cast()};
   if (color != m_bg) {
     m_log.trace_x("renderer: change_background(#%08x)", color);
     m_bg = color;
@@ -700,7 +701,7 @@ bool renderer::on(const signals::parser::change_background& evt) {
 }
 
 bool renderer::on(const signals::parser::change_foreground& evt) {
-  const unsigned int color{evt.cast()};
+  const rgba color{evt.cast()};
   if (color != m_fg) {
     m_log.trace_x("renderer: change_foreground(#%08x)", color);
     m_fg = color;
@@ -709,7 +710,7 @@ bool renderer::on(const signals::parser::change_foreground& evt) {
 }
 
 bool renderer::on(const signals::parser::change_underline& evt) {
-  const unsigned int color{evt.cast()};
+  const rgba color{evt.cast()};
   if (color != m_ul) {
     m_log.trace_x("renderer: change_underline(#%08x)", color);
     m_ul = color;
@@ -718,7 +719,7 @@ bool renderer::on(const signals::parser::change_underline& evt) {
 }
 
 bool renderer::on(const signals::parser::change_overline& evt) {
-  const unsigned int color{evt.cast()};
+  const rgba color{evt.cast()};
   if (color != m_ol) {
     m_log.trace_x("renderer: change_overline(#%08x)", color);
     m_ol = color;
@@ -758,9 +759,7 @@ bool renderer::on(const signals::parser::change_alignment& evt) {
 
 bool renderer::on(const signals::parser::reverse_colors&) {
   m_log.trace_x("renderer: reverse_colors");
-  m_fg = m_fg + m_bg;
-  m_bg = m_fg - m_bg;
-  m_fg = m_fg - m_bg;
+  std::swap(m_fg, m_bg);
   return true;
 }
 
