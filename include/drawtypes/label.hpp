@@ -23,13 +23,13 @@ namespace drawtypes {
 
   class label : public non_copyable_mixin<label> {
    public:
-    string m_foreground{};
-    string m_background{};
-    string m_underline{};
-    string m_overline{};
+    rgba m_foreground{};
+    rgba m_background{};
+    rgba m_underline{};
+    rgba m_overline{};
     int m_font{0};
-    side_values m_padding{0U,0U};
-    side_values m_margin{0U,0U};
+    side_values m_padding{0U, 0U};
+    side_values m_margin{0U, 0U};
 
     /*
      * If m_ellipsis is true, m_maxlen MUST be larger or equal to the length of
@@ -42,9 +42,9 @@ namespace drawtypes {
     bool m_ellipsis{true};
 
     explicit label(string text, int font) : m_font(font), m_text(text), m_tokenized(m_text) {}
-    explicit label(string text, string foreground = ""s, string background = ""s, string underline = ""s,
-        string overline = ""s, int font = 0, struct side_values padding = {0U,0U}, struct side_values margin = {0U,0U},
-        size_t maxlen = 0_z, bool ellipsis = true, vector<token>&& tokens = {})
+    explicit label(string text, rgba foreground = rgba{}, rgba background = rgba{}, rgba underline = rgba{},
+        rgba overline = rgba{}, int font = 0, struct side_values padding = {0U, 0U},
+        struct side_values margin = {0U, 0U}, size_t maxlen = 0_z, bool ellipsis = true, vector<token>&& tokens = {})
         : m_foreground(foreground)
         , m_background(background)
         , m_underline(underline)
@@ -57,8 +57,8 @@ namespace drawtypes {
         , m_text(text)
         , m_tokenized(m_text)
         , m_tokens(forward<vector<token>>(tokens)) {
-          assert(!m_ellipsis || (m_maxlen == 0 || m_maxlen >= 3));
-        }
+      assert(!m_ellipsis || (m_maxlen == 0 || m_maxlen >= 3));
+    }
 
     string get() const;
     operator bool();
@@ -79,6 +79,6 @@ namespace drawtypes {
 
   label_t load_label(const config& conf, const string& section, string name, bool required = true, string def = ""s);
   label_t load_optional_label(const config& conf, string section, string name, string def = ""s);
-}
+}  // namespace drawtypes
 
 POLYBAR_NS_END
