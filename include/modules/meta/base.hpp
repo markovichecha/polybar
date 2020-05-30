@@ -37,7 +37,7 @@ namespace drawtypes {
   using animation_t = shared_ptr<animation>;
   class iconset;
   using iconset_t = shared_ptr<iconset>;
-}
+}  // namespace drawtypes
 
 class builder;
 class config;
@@ -101,6 +101,10 @@ namespace modules {
    public:
     virtual ~module_interface() {}
 
+    /**
+     * Module name w/o 'module/' prefix
+     */
+    virtual string name_raw() const = 0;
     virtual string name() const = 0;
     virtual bool running() const = 0;
 
@@ -119,6 +123,7 @@ namespace modules {
     module(const bar_settings bar, string name);
     ~module() noexcept;
 
+    string name_raw() const;
     string name() const;
     bool running() const;
     void stop();
@@ -146,6 +151,7 @@ namespace modules {
     std::condition_variable m_sleephandler;
 
     string m_name;
+    string m_name_raw;
     unique_ptr<builder> m_builder;
     unique_ptr<module_formatter> m_formatter;
     vector<thread> m_threads;
@@ -160,6 +166,6 @@ namespace modules {
   };
 
   // }}}
-}
+}  // namespace modules
 
 POLYBAR_NS_END
