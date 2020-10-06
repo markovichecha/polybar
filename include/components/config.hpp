@@ -17,6 +17,7 @@ POLYBAR_NS
 
 DEFINE_ERROR(value_error);
 DEFINE_ERROR(key_error);
+DEFINE_ERROR(section_error);
 
 using valuemap_t = std::unordered_map<string, string>;
 using sectionmap_t = std::map<string, valuemap_t>;
@@ -84,7 +85,10 @@ class config {
   template <typename T = string>
   T get(const string& section, const string& key) const {
     auto it = m_sections.find(section);
-    if (it == m_sections.end() || it->second.find(key) == it->second.end()) {
+    if (it == m_sections.end()) {
+      throw section_error("Missing section \"" + section + "\"");
+    }
+    if (it->second.find(key) == it->second.end()) {
       throw key_error("Missing parameter \"" + section + "." + key + "\"");
     }
     return dereference<T>(section, key, it->second.at(key), convert<T>(string{it->second.at(key)}));
