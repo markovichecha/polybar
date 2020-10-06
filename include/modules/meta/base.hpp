@@ -29,19 +29,15 @@ using std::map;
 // fwd decl {{{
 
 namespace drawtypes {
-  class label;
-  using label_t = shared_ptr<label>;
   class ramp;
   using ramp_t = shared_ptr<ramp>;
   class progressbar;
   using progressbar_t = shared_ptr<progressbar>;
   class animation;
   using animation_t = shared_ptr<animation>;
-  using icon = label;
-  using icon_t = label_t;
   class iconset;
   using iconset_t = shared_ptr<iconset>;
-}
+}  // namespace drawtypes
 
 class builder;
 class config;
@@ -134,6 +130,8 @@ namespace modules {
     void broadcast();
     void idle();
     void sleep(chrono::duration<double> duration);
+    template <class Clock, class Duration>
+    void sleep_until(chrono::time_point<Clock, Duration> point);
     void wakeup();
     string get_format() const;
     string get_output();
@@ -164,6 +162,6 @@ namespace modules {
   };
 
   // }}}
-}
+}  // namespace modules
 
 POLYBAR_NS_END

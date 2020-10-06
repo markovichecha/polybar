@@ -27,8 +27,8 @@ vector<pair<string, string>> parse_action_cmd_list = {
   {"\\:\\:\\:", ":\\:\\:\\::\\abc"},
 };
 
-INSTANTIATE_TEST_CASE_P(Inst, ParseActionCmd,
-    ::testing::ValuesIn(parse_action_cmd_list),);
+INSTANTIATE_TEST_SUITE_P(Inst, ParseActionCmd,
+    ::testing::ValuesIn(parse_action_cmd_list));
 
 TEST_P(ParseActionCmd, correctness) {
   auto input = GetParam().second;

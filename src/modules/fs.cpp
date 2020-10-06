@@ -56,7 +56,7 @@ namespace modules {
     // Warn about "unreachable" format tag
     if (m_formatter->has(TAG_LABEL_UNMOUNTED) && m_remove_unmounted) {
       m_log.warn("%s: Defined format tag \"%s\" will never be used (reason: `remove-unmounted = true`)", name(),
-          TAG_LABEL_UNMOUNTED);
+          string{TAG_LABEL_UNMOUNTED});
     }
   }
 
@@ -96,11 +96,11 @@ namespace modules {
         mount->type = details->at(MOUNTINFO_TYPE);
         mount->fsname = details->at(MOUNTINFO_FSNAME);
 
-        // see: http://en.cppreference.com/w/cpp/filesystem/space
-        mount->bytes_total = buffer.f_frsize * buffer.f_blocks;
-        mount->bytes_free = buffer.f_frsize * buffer.f_bfree;
+        // see: https://en.cppreference.com/w/cpp/filesystem/space
+        mount->bytes_total = static_cast<uint64_t>(buffer.f_frsize) * static_cast<uint64_t>(buffer.f_blocks);
+        mount->bytes_free = static_cast<uint64_t>(buffer.f_frsize) * static_cast<uint64_t>(buffer.f_bfree);
         mount->bytes_used = mount->bytes_total - mount->bytes_free;
-        mount->bytes_avail = buffer.f_frsize * buffer.f_bavail;
+        mount->bytes_avail = static_cast<uint64_t>(buffer.f_frsize) * static_cast<uint64_t>(buffer.f_bavail);
 
         mount->percentage_free = math_util::percentage<double>(mount->bytes_avail, mount->bytes_used + mount->bytes_avail);
         mount->percentage_used = math_util::percentage<double>(mount->bytes_used, mount->bytes_used + mount->bytes_avail);
